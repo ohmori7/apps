@@ -21,7 +21,10 @@ class KcnFdb
 		kfe = lookup(src, dst)
 		if kfe == nil
 			kfe = KcnFdbEntry.new(src, dst, iport, oport)
-			@fdb[hash(src, dst)] = kfe
+			if @fdb[hash(src, dst)] == nil
+				@fdb[hash(src, dst) = Array.new
+			end
+			@fdb[hash(src, dst)].push(kfe)
 		elsif kfe.iport != iport || kfe.oport != oport
 			kfe.iport = iport
 			kfe.oport = oport
@@ -32,7 +35,11 @@ class KcnFdb
 	end
 
 	def lookup(src, dst)
-		return @fdb[hash(src, dst)]
+		h = @fdb[hash(src, dst)]
+		return nil if h == nil
+		h.values.each do |e|
+			return e if e.src == src && e.dst == dst
+		end
 	end
 
 	def self.update(kd)
