@@ -14,7 +14,9 @@ class KcnFdb
 	end
 
 	def each(&block)
-		@fdb.values.each(&block)
+		@fdb.values.each do |a|
+			a.each(&block)
+		end
 	end
 
 	def update(src, dst, iport, oport)
