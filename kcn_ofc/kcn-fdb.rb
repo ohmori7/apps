@@ -22,7 +22,7 @@ class KcnFdb
 		if kfe == nil
 			kfe = KcnFdbEntry.new(src, dst, iport, oport)
 			if @fdb[hash(src, dst)] == nil
-				@fdb[hash(src, dst) = Array.new
+				@fdb[hash(src, dst)] = Array.new
 			end
 			@fdb[hash(src, dst)].push(kfe)
 		elsif kfe.iport != iport || kfe.oport != oport
