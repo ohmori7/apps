@@ -51,20 +51,20 @@ class KcnOfc < Controller
 	def packet_in(dpid, m)
 		sw = dpid2switch(dpid)
 		swname = sw != nil ? sw.name : "unknown"
-		info "received a packet from #{swname}"
-		info "datapath_id: #{dpid.to_hex}"
-		info "transaction_id: #{m.transaction_id.to_hex}"
-		info "buffer_id: #{m.buffer_id.to_hex}"
-		info "total_len: #{m.total_len}"
-		info "in_port: #{m.in_port}"
-		info "reason: #{m.reason.to_hex}"
-		info "data: #{m.data.unpack "H*"}"
+		debug "received a packet from #{swname}"
+		debug "datapath_id: #{dpid.to_hex}"
+		debug "transaction_id: #{m.transaction_id.to_hex}"
+		debug "buffer_id: #{m.buffer_id.to_hex}"
+		debug "total_len: #{m.total_len}"
+		debug "in_port: #{m.in_port}"
+		debug "reason: #{m.reason.to_hex}"
+		debug "data: #{m.data.unpack "H*"}"
 		if m.ipv4?
-			info "IPv4 src: #{m.ipv4_saddr}"
-			info "IPv4 dst: #{m.ipv4_daddr}"
+			debug "IPv4 src: #{m.ipv4_saddr}"
+			debug "IPv4 dst: #{m.ipv4_daddr}"
 			#forward_ipv4(dpid, m)
 		else
-			info "unsupported protocol received"
+			debug "unsupported protocol received"
 		end
 	end
 
