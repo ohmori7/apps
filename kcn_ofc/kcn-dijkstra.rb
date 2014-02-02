@@ -64,6 +64,10 @@ class KcnDijkstra
 		end
 	end
 
+	def lookup(node)
+		return @vertextable[node]
+	end
+
 	private
 
 	def add(node, v, l)
@@ -86,10 +90,6 @@ class KcnDijkstra
 		@vertextable[node] = w
 		@candidatelist.unshift(w)
 		return w
-	end
-
-	def lookup(node)
-		return @vertextable[node]
 	end
 
 	def get_nearest
