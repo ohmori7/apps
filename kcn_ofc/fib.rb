@@ -39,7 +39,26 @@ module FIB
 		    strict: true
 		    )
 	end
-	
+
+	def fib_add_flow(dpid, ipsrc, ipdst, sport, dport, iport, oport)
+		action = SendOutPort.new(port_number: oport)
+		match = Match.new(
+		    in_port: iport,
+		    dl_type: ETHER_TYPE_IP,
+		    nw_proto: 6,	# XXX only TCP
+		    nw_src: ipsrc, nw_dst: ipdst,
+		    tp_src: sport, tp_dst: dport
+		    )
+		send_flow_mod_add(
+		    dpid,
+		    table_id: TABLE_ID,
+		    buffer_id: OFP_NO_BUFFER,
+		    match: match,
+		    actions: [action],
+		    strict: true
+		    )
+	end
+
 	def fib_add_miss_flow_entry(dpid, table_id)
 		action = SendOutPort.new(
 		    port_number: Controller::OFPP_CONTROLLER,
