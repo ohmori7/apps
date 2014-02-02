@@ -96,5 +96,4 @@ class KcnOfc < Controller
 			return sw if ! KcnLink.is_directly_connected?(host, sw)
 		end
 	end
-
 end
