@@ -2,14 +2,17 @@ require 'kcn-host'
 require 'kcn-switch'
 
 class KcnLink
-	attr_reader :node, :port, :peer, :peerport, :bandwidth
+	attr_reader :node, :port, :maddr, :peer, :peerport, :peermaddr, :bandwidth
 	@@links = Hash.new
 
-	def initialize(name, port, peername, peerport, bandwidth)
+	def initialize(name, port, maddr,
+	    peername, peerport, peermaddr, bandwidth)
 		@node = find_node(name, port)
 		@port = port
+		@maddr = maddr
 		@peer = find_node(peername, peerport)
 		@peerport = peerport
+		@peermaddr = peermaddr
 		@bandwidth = bandwidth
 		@@links[node] = Array.new if @@links[node] == nil
 		@@links[node].push(self)
@@ -36,9 +39,9 @@ class KcnLink
 		return @@links[node]
 	end
 
-	def self.add(name, port, peername, peerport, bandwidth)
-		self.new(name, port, peername, peerport, bandwidth)
-		self.new(peername, peerport, name, port, bandwidth)
+	def self.add(name, port, maddr, peername, peerport, peermaddr, bandwidth)
+		self.new(name, port, maddr, peername, peerport, peermaddr, bandwidth)
+		self.new(peername, peerport, peermaddr, name, port, maddr, bandwidth)
 	end
 
 	private

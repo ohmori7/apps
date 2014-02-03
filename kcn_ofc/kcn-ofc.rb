@@ -8,7 +8,8 @@ class KcnOfc < Controller
 	include Trema::DefaultLogger
 
 	def start
-		@is_reactive = true	# XXX should make this config
+		# XXX should make these config
+		@is_reactive = false
 
 		kcn_init	# XXX
 		#
@@ -24,7 +25,7 @@ class KcnOfc < Controller
 
 	def install_fib(sw)
 		sw.fdb.each do |e|
-			fib_add(sw.dpid, e.src.ip, e.dst.ip, e.iport, e.oport)
+			fib_add(sw.dpid, e.edst, e.src.ip, e.dst.ip, e.iport, e.oport)
 			info "#{sw.name} #{e.src.name} #{e.dst.name} #{e.iport} #{e.oport}"
 		end
 	end
@@ -46,7 +47,7 @@ class KcnOfc < Controller
 			node = l.node
 			if node.class == KcnSwitch
 				oport = l.port if node == sw
-				fib_add_flow(node.dpid, src, dst, sport, dport,
+				fib_add_flow(node.dpid, l.peermaddr, src, dst, sport, dport,
 				    iport, l.port)
 				iport = l.peerport
 			elsif node.class == KcnHost

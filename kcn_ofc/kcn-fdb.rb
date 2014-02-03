@@ -1,7 +1,8 @@
 class KcnFdb
 	class KcnFdbEntry
-		attr_reader :src, :dst, :iport, :oport
-		def initialize(src, dst, iport, oport)
+		attr_reader :edst, :src, :dst, :iport, :oport
+		def initialize(edst, src, dst, iport, oport)
+			@edst = edst
 			@src = src
 			@dst = dst
 			@iport = iport
@@ -19,15 +20,16 @@ class KcnFdb
 		end
 	end
 
-	def update(src, dst, iport, oport)
+	def update(edst, src, dst, iport, oport)
 		kfe = lookup(src, dst)
 		if kfe == nil
-			kfe = KcnFdbEntry.new(src, dst, iport, oport)
+			kfe = KcnFdbEntry.new(edst, src, dst, iport, oport)
 			if @fdb[hash(src, dst)] == nil
 				@fdb[hash(src, dst)] = Array.new
 			end
 			@fdb[hash(src, dst)].push(kfe)
 		elsif kfe.iport != iport || kfe.oport != oport
+			kfe.edst = edst
 			kfe.iport = iport
 			kfe.oport = oport
 		else
@@ -59,7 +61,7 @@ class KcnFdb
 					src = kd.root
 					dst = v.node
 					oport = l.port
-					node.fdb.update(src, dst, iport, oport)
+					node.fdb.update(l.peermaddr, src, dst, iport, oport)
 					iport = l.peerport
 				elsif node.class == KcnHost
 					if l.peer.class != KcnSwitch

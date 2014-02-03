@@ -6,19 +6,23 @@ module FIB
 	OFP_NO_BUFFER = 0xffffffff
 	OFPCML_NO_BUFFER = 0xffff
 
-	def fib_add(dpid, ipsrc, ipdst, iport, oport)
-		action = SendOutPort.new(port_number: oport)
+	def fib_add(dpid, edst, ipsrc, ipdst, iport, oport)
 		match = Match.new(
 		    in_port: iport,
 		    dl_type: ETHER_TYPE_IP,
 		    nw_src: ipsrc, nw_dst: ipdst
 		    )
+		action = Array.new
+		if edst != nil
+			action.push(ActionSetDlDst.new(edst))
+		end
+		action.push(SendOutPort.new(port_number: oport))
 		send_flow_mod_add(
 		    dpid,
 		    table_id: TABLE_ID,
 		    buffer_id: OFP_NO_BUFFER,
 		    match: match,
-		    actions: [action],
+		    actions: action,
 		    strict: true
 		    )
 	end
@@ -40,8 +44,7 @@ module FIB
 		    )
 	end
 
-	def fib_add_flow(dpid, ipsrc, ipdst, sport, dport, iport, oport)
-		action = SendOutPort.new(port_number: oport)
+	def fib_add_flow(dpid, edst, ipsrc, ipdst, sport, dport, iport, oport)
 		match = Match.new(
 		    in_port: iport,
 		    dl_type: ETHER_TYPE_IP,
@@ -49,12 +52,17 @@ module FIB
 		    nw_src: ipsrc, nw_dst: ipdst,
 		    tp_src: sport, tp_dst: dport
 		    )
+		action = Array.new
+		if edst != nil
+			action.push(ActionSetDlDst.new(edst))
+		end
+		action.push(SendOutPort.new(port_number: oport))
 		send_flow_mod_add(
 		    dpid,
 		    table_id: TABLE_ID,
 		    buffer_id: OFP_NO_BUFFER,
 		    match: match,
-		    actions: [action],
+		    actions: action,
 		    strict: true
 		    )
 	end
